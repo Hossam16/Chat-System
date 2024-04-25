@@ -28,6 +28,7 @@ services:
     depends_on:
       - "db"
       - "elasticsearch"
+      - "redis"
     volumes:
       - "./chatSystemRubyOnRails/db:/rails/db"
       - "./chatSystemRubyOnRails/app:/rails/app"
@@ -55,6 +56,7 @@ services:
     expose:
       - "9200"
       - "9300"
+
   redis:
     image: redis
     restart: always
@@ -64,3 +66,13 @@ services:
       - 6379:6379
     expose:
       - "6379"
+
+  chat-api-go-lang:
+    build: ./chatSystemGolang
+    restart: always
+    depends_on:
+      - "redis"
+    volumes:
+      - ".:/go-chat-creation-api"
+    ports:
+      - "8080:8080"
