@@ -4,3 +4,6 @@
 [submodule "chatSystemElasticsearch"]
 	path = chatSystemElasticsearch
 	url = https://github.com/Hossam16/chatSystemElasticsearch.git
+[submodule "chatSystemGolang"]
+	path = chatSystemGolang
+	url = https://github.com/Hossam16/chatSystemGolang.git
