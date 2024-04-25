@@ -1,0 +1,6 @@
+[submodule "chatSystemRubyOnRails"]
+	path = chatSystemRubyOnRails
+	url = https://github.com/Hossam16/chatSystemRubyOnRails.git
+[submodule "chatSystemElasticsearch"]
+	path = chatSystemElasticsearch
+	url = https://github.com/Hossam16/chatSystemElasticsearch.git

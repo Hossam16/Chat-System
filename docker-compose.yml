@@ -1,0 +1,66 @@
+version: '3.7'
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    volumes:
+      - ./tmp/db:/tmp/mysql
+    environment:
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      MYSQL_HOST: ${DB_HOST}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+  chat-api-ruby-on-rails:
+    build: ./chatSystemRubyOnRails
+    restart: always
+    command: "./bin/rails server"
+    environment:
+      RAILS_ENV: ${RAILS_ENV}
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      DB_HOST: ${DB_HOST}
+      DB_ROOT: ${DB_ROOT}
+      DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    depends_on:
+      - "db"
+      - "elasticsearch"
+    volumes:
+      - "./chatSystemRubyOnRails/db:/rails/db"
+      - "./chatSystemRubyOnRails/app:/rails/app"
+      - "./chatSystemRubyOnRails/Gemfile:/rails/Gemfile"
+      - "./chatSystemRubyOnRails/Gemfile.lock:/rails/Gemfile.lock"
+    ports:
+      - "3000:3000"
+
+  elasticsearch:
+    build:
+      context: chatSystemElasticsearch/
+      args:
+        ELASTIC_VERSION: 8.4.3
+    restart: always
+    volumes:
+      - ./chatSystemElasticsearch/config/chatSystemElasticsearch.yml:/usr/share/chatSystemElasticsearch/config/chatSystemElasticsearch.yml:ro,z
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTIC_PASSWORD: password
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      discovery.type: single-node
+    expose:
+      - "9200"
+      - "9300"
+  redis:
+    image: redis
+    restart: always
+    environment:
+      REDIS_HOST: redis
+    ports:
+      - 6379:6379
+    expose:
+      - "6379"
